@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
+import { ThemeProvider } from "@/components/Providers";
 
 const poppins = Poppins({ weight: ["400"], subsets: ["latin"] });
 
@@ -21,8 +22,15 @@ export default function RootLayout({
       <body
         className={cn(poppins.className, "antialiased, min-h-screen pt-16")}
       >
-        <Navbar />
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Navbar />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
