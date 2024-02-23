@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/Providers";
+import { Toaster } from "@/components/ui/toaster";
 
 const poppins = Poppins({ weight: ["400"], subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ export default function RootLayout({
         >
           <Navbar />
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
