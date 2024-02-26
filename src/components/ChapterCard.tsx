@@ -4,11 +4,16 @@ import { cn } from "@/lib/utils";
 import { Chapter } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { error } from "console";
 import React from "react";
+import { useToast } from "./ui/use-toast";
+import { Loader2 } from "lucide-react";
 
 type Props = {
   chapter: Chapter;
   index: number;
+  completedChapters: Set<String>;
+  setCompletedChapters: React.Dispatch<React.SetStateAction<Set<String>>>;
 };
 
 export type ChapterCardHandler = {
@@ -16,7 +21,8 @@ export type ChapterCardHandler = {
 };
 
 const ChapterCard = React.forwardRef<ChapterCardHandler, Props>(
-  ({ chapter, index }, ref) => {
+  ({ chapter, index, completedChapters, setCompletedChapters }, ref) => {
+    const { toast } = useToast();
     const [success, setSuccess] = React.useState<boolean | null>(null);
     const { mutate: getChapterInfo, isPending } = useMutation({
       mutationFn: async () => {
@@ -27,11 +33,41 @@ const ChapterCard = React.forwardRef<ChapterCardHandler, Props>(
       },
     });
 
+    const addChapterIdToSet = React.useCallback(() => {
+      setCompletedChapters((prev) => {
+        const newSet = new Set(prev);
+        newSet.add(chapter.id);
+        return newSet;
+      });
+    }, [chapter.id, setCompletedChapters]);
+
+    React.useEffect(() => {
+      if (chapter.videoId) {
+        setSuccess(true);
+        addChapterIdToSet;
+      }
+    }, [chapter, addChapterIdToSet]);
+
     React.useImperativeHandle(ref, () => ({
       async triggerLoad() {
+        if (chapter.videoId) {
+          addChapterIdToSet();
+          return;
+        }
         getChapterInfo(undefined, {
-          onSuccess: () => {
-            console.log(chapter.name);
+          onSuccess: ({ success }) => {
+            setSuccess(true);
+            addChapterIdToSet();
+          },
+          onError: (error) => {
+            console.error(error);
+            setSuccess(false);
+            toast({
+              title: "Error",
+              description: "There was an error loading your chapter",
+              variant: "destructive",
+            });
+            addChapterIdToSet();
           },
         });
       },
@@ -48,6 +84,7 @@ const ChapterCard = React.forwardRef<ChapterCardHandler, Props>(
         <h5>
           Chapter {index + 1}: {chapter.name}
         </h5>
+        {isPending && <Loader2 className="animate-spin" />}
       </div>
     );
   }
