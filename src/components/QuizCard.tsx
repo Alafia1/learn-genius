@@ -6,6 +6,7 @@ import React from "react";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
+import { ChevronFirst, ChevronRight } from "lucide-react";
 
 type Props = {
   chapter: Chapter & {
@@ -80,6 +81,7 @@ const QuizCard = ({ chapter }: Props) => {
       </div>
       <Button className="w-full mt-2" size="lg" onClick={checkAnswers}>
         Check Answers
+        <ChevronRight className="w-4 h-4 ml-1" />
       </Button>
     </div>
   );

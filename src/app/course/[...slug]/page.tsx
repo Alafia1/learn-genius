@@ -1,6 +1,7 @@
 import CourseSideBar from "@/components/CourseSideBar";
 import MainVideoSummary from "@/components/MainVideoSummary";
 import QuizCard from "@/components/QuizCard";
+import { Separator } from "@/components/ui/separator";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -54,6 +55,8 @@ const CoursePage = async ({ params: { slug } }: Props) => {
             />
             <QuizCard chapter={chapter} />
           </div>
+          <div className="flex-[1] h-[1px] mt-4 text-gray-500 bg-gray-500" />
+          <div className="flex pb-8"></div>
         </div>
       </div>
     </div>
