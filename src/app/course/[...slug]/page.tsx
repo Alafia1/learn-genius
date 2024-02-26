@@ -1,5 +1,6 @@
 import CourseSideBar from "@/components/CourseSideBar";
 import MainVideoSummary from "@/components/MainVideoSummary";
+import QuizCard from "@/components/QuizCard";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -17,7 +18,9 @@ const CoursePage = async ({ params: { slug } }: Props) => {
     include: {
       units: {
         include: {
-          chapters: true,
+          chapters: {
+            include: { questions: true },
+          },
         },
       },
     },
@@ -49,7 +52,7 @@ const CoursePage = async ({ params: { slug } }: Props) => {
               chapterIndex={chapterIndex}
               unitIndex={unitIndex}
             />
-            {/* <QuizCard /> */}
+            <QuizCard chapter={chapter} />
           </div>
         </div>
       </div>
