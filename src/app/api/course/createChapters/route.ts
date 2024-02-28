@@ -48,7 +48,7 @@ export async function POST(req: Request, res: Response) {
         image: course_image,
       },
     });
-
+    console.log("OpenAi output: ", output_units);
     for (const unit of output_units) {
       const title = unit.title;
       const prismaUnit = await prisma.unit.create({
@@ -57,6 +57,7 @@ export async function POST(req: Request, res: Response) {
           courseId: course.id,
         },
       });
+      console.log("Unit: ", unit);
       await prisma.chapter.createMany({
         data: unit.chapters.map((chapter) => {
           return {
@@ -72,6 +73,8 @@ export async function POST(req: Request, res: Response) {
   } catch (error) {
     if (error instanceof ZodError) {
       return new NextResponse("Invalid Body", { status: 400 });
+    } else {
+      console.error(error);
     }
   }
 }
